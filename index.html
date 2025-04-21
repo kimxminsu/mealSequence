@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>오늘의 밥 순서</title>
+    <style>
+      body {
+        font-family: "Noto Sans KR", sans-serif;
+        background-color: #b3e5fc; /* 파스텔 하늘색 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        color: #222;
+      }
+
+      .container {
+        background-color: #e1f5fe; /* 더 밝은 파스텔 하늘색 */
+        width: 80%;
+        max-width: 800px;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+      }
+
+      .shine {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background-color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.8);
+      }
+
+      h1 {
+        font-size: 36px;
+        margin: 30px 0;
+      }
+
+      .countdown {
+        background-color: #b3e5fc; /* 파스텔 하늘색 */
+        padding: 15px;
+        border-radius: 15px;
+        margin: 20px 0;
+        font-size: 20px;
+      }
+
+      .countdown-number {
+        background-color: #81d4fa; /* 조금 더 진한 파스텔 하늘색 */
+        color: white;
+        padding: 5px 15px;
+        border-radius: 10px;
+        margin: 0 10px;
+        font-weight: bold;
+      }
+
+      .order-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        gap: 10px;
+      }
+
+      .order-box {
+        background-color: #e1f5fe; /* 더 밝은 파스텔 하늘색 */
+        width: 22%;
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+         border-radius:15px ;
+      }
+
+      .order-number {
+          font-size :60 px ;
+          font-weight :bold ;
+          color:#4fc3f7 ; /* 진한 파스텔 하늘색 */
+          margin-bottom :10 px ;
+      } .order-name { font-size :18 px ; color:#555 ; } .arrow { color:#80deea ; /* 연한 청록색 */ font-size :24 px ; font-weight :bold ; } ```
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="shine">부울경</div>
+      <h1>오늘의 밥 순서</h1>
+
+      <div class="countdown">방학까지 <span class="countdown-number" id="daysLeft">D-35</span></div>
+
+      <div class="order-container" id="orderContainer">
+        <!-- Will be filled by JavaScript -->
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 방학 날짜 설정 (2025년 5월 30일)
+        const vacationDate = new Date(2025, 4, 30);
+        const currentDate = new Date();
+
+        // 방학까지 남은 일수 계산
+        const timeDiff = vacationDate - currentDate;
+        const daysLeft = Math.ceil(timeDiff / 86400000);
+        document.getElementById("daysLeft").textContent = `D-${daysLeft}`;
+
+        const startDate = new Date(2025, 3, 18); // 기준 날짜: 2025년 4월 8일
+        const now = new Date();
+        const specialDate = new Date(
+          now.getFullYear(),
+          3,
+          10,
+          now.getHours(),
+          now.getMinutes(),
+          now.getSeconds(),
+          now.getMilliseconds()
+        ); // 특별 날짜: 2025년 4월 14일
+        console.log(specialDate);
+
+        // 주말을 제외한 평일 계산 함수
+        function calculateWeekdays(start, end) {
+          let current = new Date(start);
+          let weekdays = 0;
+
+          while (current < end) {
+            const day = current.getDay(); // 요일 (0: 일요일, 6: 토요일)
+            if (day !== 0 && day !== 6) {
+              // 평일만 카운트
+              weekdays++;
+            }
+            current.setDate(current.getDate() + 1); // 하루 증가
+          }
+
+          return weekdays;
+        }
+
+        // 평일 기준 경과 일수 계산
+        const elapsedWeekdays = calculateWeekdays(startDate, now);
+
+        // shift를 조정하여 원하는 순서로 변경
+        const shift = (elapsedWeekdays - 1) % 4;
+
+        // 반 순서 회전 로직
+        const originalOrder = [1, 2, 3, 4];
+
+        // 새로운 순서 계산
+        const rotatedOrder = originalOrder.slice(shift).concat(originalOrder.slice(0, shift));
+
+        console.log(rotatedOrder); // 회전된 순서 출력
+
+        // 화면 업데이트
+        const orderContainer = document.getElementById("orderContainer");
+
+        orderContainer.innerHTML = "";
+
+        rotatedOrder.forEach((num, index) => {
+          const box = document.createElement("div");
+          box.className = "order-box";
+
+          box.innerHTML = `
+      <div class="order-number">${index + 1}등</div>
+      <div class="order-name">${num}반</div>
+    `;
+
+          orderContainer.appendChild(box);
+          if (index < 3) orderContainer.innerHTML += '<div class="arrow">→</div>';
+        });
+      });
+    </script>
+  </body>
+</html>
