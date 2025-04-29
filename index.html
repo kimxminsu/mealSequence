@@ -2,207 +2,264 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>오늘의 밥 순서</title>
-    <link rel="icon" href="img/logo-rice.png" />
-    <link rel="apple-touch-icon" href="img/logo-rice.png" />
+    <title>트로피 애니메이션</title>
     <style>
+      html,
       body {
-        font-family: "Noto Sans KR", sans-serif;
-        background-color: #b3e5fc; /* 파스텔 하늘색 */
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        width: 100vw;
         height: 100vh;
         margin: 0;
-        color: #222;
+        padding: 0;
+        overflow: hidden;
+        background: #f5f6f7;
       }
-
-      .container {
-        background-color: #e1f5fe; /* 더 밝은 파스텔 하늘색 */
-        width: 80%;
-        max-width: 800px;
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        position: relative;
-      }
-
-      .shine {
-        position: absolute;
-        top: -30px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 60px;
-        background-color: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
-        box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.8);
-      }
-
-      h1 {
-        font-size: 36px;
-        margin: 30px 0;
-      }
-
-      .countdown {
-        background-color: #b3e5fc; /* 파스텔 하늘색 */
-        padding: 15px;
-        border-radius: 15px;
-        margin: 20px 0;
-        font-size: 20px;
-      }
-
-      .countdown-number {
-        background-color: #81d4fa; /* 조금 더 진한 파스텔 하늘색 */
-        color: white;
-        padding: 5px 15px;
-        border-radius: 10px;
-        margin: 0 10px;
-        font-weight: bold;
-      }
-
-      .order-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 30px;
-        gap: 10px;
-      }
-
-      .order-box {
-        background-color: #e1f5fe; /* 더 밝은 파스텔 하늘색 */
-        width: 22%;
-        aspect-ratio: 1;
+      body {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
-        border-radius: 15px;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        font-family: "Pretendard", "Noto Sans KR", sans-serif;
       }
-
-      .order-number {
-        font-size: 60 px;
-        font-weight: bold;
-        color: #4fc3f7; /* 진한 파스텔 하늘색 */
-        margin-bottom: 10 px;
+      .main-container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
       }
-      .order-name {
-        font-size: 18 px;
-        color: #555;
+      .trophy-wrapper {
+        position: relative;
+        width: 40vw;
+        max-width: 600px;
+        min-width: 320px;
+        aspect-ratio: 1 / 1;
+        margin-bottom: 4vh;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* 부드러운 트랜지션 효과 */
+        transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1),
+          box-shadow 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        transform: scale(1);
+        /* box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08); */
       }
-      .arrow {
-        color: #80deea; /* 연한 청록색 */
-        font-size: 24 px;
-        font-weight: bold;
+      .trophy-wrapper.zoomed {
+        transform: scale(1.3);
+        /* box-shadow: 0 8px 40px 0 rgba(255, 215, 0, 0.25), 0 0 60px #ffd70088; */
       }
-      .footer {
-        position: fixed;
-        left: 0;
-        bottom: 20px;
+      .trophy-img {
         width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        transition: filter 0.3s;
+      }
+      .trophy-label {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 12%;
         text-align: center;
-        font-size: 18px;
-        color: #4fc3f7;
+        font-size: 4vw;
         font-weight: bold;
+        color: #222;
+        pointer-events: none;
+        user-select: none;
+        transition: font-size 0.8s cubic-bezier(0.7, 0, 0.3, 1), text-shadow 0.8s;
+        text-shadow: 0 2px 8px #fff, 0 0 16px #ffd70077;
+      }
+      .trophy-wrapper.zoomed .trophy-label {
+        font-size: 7vw;
+        text-shadow: 0 2px 32px #fff, 0 0 48px #ffd700bb;
+      }
+      .rank-list {
+        display: flex;
+        gap: 2vw;
+        justify-content: center;
+        margin-top: 0;
+        z-index: 1;
+        width: 100vw;
+        transition: opacity 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        opacity: 1;
+      }
+      .rank-list.faded {
+        opacity: 0.2;
+      }
+      .rank-item {
+        background: #ffeec0;
+        border-radius: 18px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        width: 18vw;
+        max-width: 180px;
+        min-width: 100px;
+        height: 8vw;
+        max-height: 90px;
+        min-height: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        font-size: 2vw;
+        font-weight: bold;
+        color: #222;
+      }
+      .rank-num {
+        position: absolute;
+        top: 8px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 1.2vw;
+        color: #888;
+        font-weight: 700;
+      }
+      .class-name {
+        margin-top: 1.5vw;
+        font-size: 2.2vw;
+        font-weight: 900;
         letter-spacing: 2px;
-        opacity: 0.7;
-        z-index: 999;
-        pointer-events: none; /* 클릭 방지 */
+      }
+      #confetti-container {
+        position: fixed;
+        pointer-events: none;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: visible;
+        z-index: 9999;
+      }
+      .confetti {
+        position: absolute;
+        top: 0;
+        font-size: 2.5vw;
+        animation: confetti-fall 2s linear forwards;
+        user-select: none;
+      }
+      @keyframes confetti-fall {
+        to {
+          transform: translateY(90vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+      @media (max-width: 900px) {
+        .trophy-wrapper {
+          width: 70vw;
+          min-width: 200px;
+        }
+        .trophy-wrapper.zoomed {
+          transform: scale(2.2);
+        }
+        .rank-item {
+          width: 25vw;
+          min-width: 80px;
+          height: 12vw;
+          min-height: 50px;
+        }
+        .class-name {
+          font-size: 4vw;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="shine">부울경</div>
-      <h1>오늘의 밥 순서</h1>
-
-      <div class="countdown">방학까지 <span class="countdown-number" id="daysLeft">D-35</span></div>
-
-      <div class="order-container" id="orderContainer">
-        <!-- Will be filled by JavaScript -->
+    <div id="confetti-container"></div>
+    <div class="main-container">
+      <div class="trophy-wrapper" id="trophyWrapper">
+        <img class="trophy-img" id="trophyImg" src="트로피.png" alt="트로피" />
+        <div class="trophy-label" id="trophyLabel">1</div>
       </div>
+      <div class="rank-list" id="rankList"></div>
     </div>
-    <footer class="footer">kimxminsu</footer>
-
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // 방학 날짜 설정 (2025년 5월 30일)
-        const vacationDate = new Date(2025, 4, 30);
-        const currentDate = new Date();
+      // 날짜 계산 및 순서 로직 동일
+      const startDate = new Date(2025, 3, 18); // 2025년 4월 18일
+      const now = new Date();
 
-        // 방학까지 남은 일수 계산
-        const timeDiff = vacationDate - currentDate;
-        const daysLeft = Math.ceil(timeDiff / 86400000);
-        document.getElementById("daysLeft").textContent = `D-${daysLeft}`;
+      function calculateWeekdays(start, end) {
+        let current = new Date(start);
+        let weekdays = 0;
+        while (current < end) {
+          const day = current.getDay();
+          if (day !== 0 && day !== 6) weekdays++;
+          current.setDate(current.getDate() + 1);
+        }
+        return weekdays;
+      }
 
-        const startDate = new Date(2025, 3, 18); // 기준 날짜: 2025년 4월 18일
-        const now = new Date();
-        // const specialDate = new Date(
-        //   now.getFullYear(),
-        //   3,
-        //   22,
-        //   now.getHours(),
-        //   now.getMinutes(),
-        //   now.getSeconds(),
-        //   now.getMilliseconds()
-        // );
-        // console.log(specialDate);
+      const elapsedWeekdays = calculateWeekdays(startDate, now);
+      const shift = (elapsedWeekdays - 1) % 4;
+      const originalOrder = [1, 2, 3, 4];
+      const rotatedOrder = originalOrder.slice(shift).concat(originalOrder.slice(0, shift));
 
-        // 주말을 제외한 평일 계산 함수
-        function calculateWeekdays(start, end) {
-          let current = new Date(start);
-          let weekdays = 0;
+      // DOM에 반영
+      const wrapper = document.getElementById("trophyWrapper");
+      const label = document.getElementById("trophyLabel");
+      const rankList = document.getElementById("rankList");
 
-          while (current < end) {
-            const day = current.getDay(); // 요일 (0: 일요일, 6: 토요일)
-            if (day !== 0 && day !== 6) {
-              // 평일만 카운트
-              weekdays++;
-            }
-            current.setDate(current.getDate() + 1); // 하루 증가
-          }
+      // 1등 트로피 라벨 초기화
+      label.textContent = rotatedOrder[0] + "반";
 
-          return weekdays;
+      // 하단 랭킹 리스트 동적 생성
+      rankList.innerHTML = "";
+      for (let i = 1; i < rotatedOrder.length; i++) {
+        const rankItem = document.createElement("div");
+        rankItem.className = "rank-item";
+        rankItem.innerHTML = `
+        <div class="rank-num">${i + 1}</div>
+        <div class="class-name">${rotatedOrder[i]}반</div>
+      `;
+        rankList.appendChild(rankItem);
+      }
+
+      // 트로피 애니메이션 (클래스 토글 방식)
+      function animateTrophy() {
+        // 1단계: 확대 + 하단 흐림
+        wrapper.classList.add("zoomed");
+        rankList.classList.add("faded");
+
+        // 2단계: 확대된 상태에서 라벨 강조 (텍스트 변경은 자연스럽게)
+        setTimeout(() => {
+          label.textContent = rotatedOrder[0] + "반";
+        }, 600);
+
+        // 3단계: 다시 축소 + 하단 랭킹 복구
+        setTimeout(() => {
+          wrapper.classList.remove("zoomed");
+          rankList.classList.remove("faded");
+        }, 1800);
+      }
+
+      window.onload = animateTrophy;
+
+      function showConfetti(duration = 2000) {
+        const confettiContainer = document.getElementById("confetti-container");
+        const emojis = ["🎉", "✨", "🎊", "💥", "⭐", "👻"];
+        const confettiCount = 40;
+
+        for (let i = 0; i < confettiCount; i++) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.animationDelay = Math.random() * 0.5 + "s";
+          confettiContainer.appendChild(confetti);
+
+          setTimeout(() => confetti.remove(), duration);
         }
 
-        // 평일 기준 경과 일수 계산
-        const elapsedWeekdays = calculateWeekdays(startDate, now);
+        setTimeout(() => {
+          confettiContainer.innerHTML = "";
+        }, duration);
+      }
 
-        // shift를 조정하여 원하는 순서로 변경
-        const shift = (elapsedWeekdays - 1) % 4;
-
-        // 반 순서 회전 로직
-        const originalOrder = [1, 2, 3, 4];
-
-        // 새로운 순서 계산
-        const rotatedOrder = originalOrder.slice(shift).concat(originalOrder.slice(0, shift));
-
-        console.log(rotatedOrder); // 회전된 순서 출력
-
-        // 화면 업데이트
-        const orderContainer = document.getElementById("orderContainer");
-
-        orderContainer.innerHTML = "";
-
-        rotatedOrder.forEach((num, index) => {
-          const box = document.createElement("div");
-          box.className = "order-box";
-
-          box.innerHTML = `
-      <div class="order-number">${index + 1}등</div>
-      <div class="order-name">${num}반</div>
-    `;
-
-          orderContainer.appendChild(box);
-          if (index < 3) orderContainer.innerHTML += '<div class="arrow">→</div>';
-        });
-      });
+      showConfetti(2000);
     </script>
   </body>
 </html>
